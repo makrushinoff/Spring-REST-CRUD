@@ -1,6 +1,7 @@
 package ua.andrij.spring.controllers;
 
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -12,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import ua.andrij.spring.dao.PersonDAO;
 import ua.andrij.spring.models.Person;
 
+import javax.validation.Valid;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -33,7 +34,10 @@ public class PeopleController {
     }
 
     @PostMapping("/")
-    public void createPerson(@RequestBody Person person) {
+    public void createPerson(@RequestBody @Valid Person person,
+                             BindingResult bindingResult) {
+        if(bindingResult.hasErrors())
+            return;
         personDAO.createPerson(person);
     }
 
@@ -43,7 +47,10 @@ public class PeopleController {
     }
 
     @PatchMapping("/{id}")
-    public void updatePersonById(@PathVariable UUID id, @RequestBody Person person) {
+    public void updatePersonById(@PathVariable UUID id, @RequestBody @Valid Person person,
+                                 BindingResult bindingResult) {
+        if(bindingResult.hasErrors())
+            return;
         personDAO.updateByID(id, person);
     }
 
